@@ -1,0 +1,129 @@
+import org.junit.jupiter.api.Test;
+import java.util.*;
+import java.util.stream.Collectors;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UC9_GroupBogiesTest {
+
+    // Bogie class (same as UC7/UC8)
+    static class Bogie {
+        String name;
+        int capacity;
+
+        Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
+        }
+    }
+
+    // Grouping method
+    Map<String, List<Bogie>> groupBogies(List<Bogie> bogies) {
+        return bogies.stream()
+                .collect(Collectors.groupingBy(b -> b.name));
+    }
+
+    // TEST 1: Basic grouping
+    @Test
+    void testGrouping_BogiesGroupedByType() {
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("Sleeper", 70)
+        );
+
+        Map<String, List<Bogie>> result = groupBogies(bogies);
+
+        assertTrue(result.containsKey("Sleeper"));
+    }
+
+    // TEST 2: Multiple bogies in same group
+    @Test
+    void testGrouping_MultipleBogiesInSameGroup() {
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("Sleeper", 70)
+        );
+
+        Map<String, List<Bogie>> result = groupBogies(bogies);
+
+        assertEquals(2, result.get("Sleeper").size());
+    }
+
+    // TEST 3: Different types
+    @Test
+    void testGrouping_DifferentBogieTypes() {
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("AC Chair", 50)
+        );
+
+        Map<String, List<Bogie>> result = groupBogies(bogies);
+
+        assertEquals(2, result.size());
+    }
+
+    // TEST 4: Empty list
+    @Test
+    void testGrouping_EmptyBogieList() {
+        List<Bogie> bogies = new ArrayList<>();
+
+        Map<String, List<Bogie>> result = groupBogies(bogies);
+
+        assertTrue(result.isEmpty());
+    }
+
+    // TEST 5: Single category
+    @Test
+    void testGrouping_SingleBogieCategory() {
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Sleeper", 72)
+        );
+
+        Map<String, List<Bogie>> result = groupBogies(bogies);
+
+        assertEquals(1, result.size());
+    }
+
+    // TEST 6: Correct keys
+    @Test
+    void testGrouping_MapContainsCorrectKeys() {
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("AC Chair", 50),
+                new Bogie("First Class", 24)
+        );
+
+        Map<String, List<Bogie>> result = groupBogies(bogies);
+
+        assertTrue(result.containsKey("Sleeper"));
+        assertTrue(result.containsKey("AC Chair"));
+        assertTrue(result.containsKey("First Class"));
+    }
+
+    // TEST 7: Group size validation
+    @Test
+    void testGrouping_GroupSizeValidation() {
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("Sleeper", 70),
+                new Bogie("AC Chair", 50)
+        );
+
+        Map<String, List<Bogie>> result = groupBogies(bogies);
+
+        assertEquals(2, result.get("Sleeper").size());
+        assertEquals(1, result.get("AC Chair").size());
+    }
+
+    // TEST 8: Original list unchanged
+    @Test
+    void testGrouping_OriginalListUnchanged() {
+        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+
+        int originalSize = bogies.size();
+
+        groupBogies(bogies);
+
+        assertEquals(originalSize, bogies.size());
+    }
+}
